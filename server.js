@@ -8,7 +8,8 @@ var consolidate = require("consolidate"); // Templating library adapter for Expr
 var swig = require("swig"); //Templating agent (like mustache)
 var MongoClient = require("mongodb").MongoClient; // Driver for connecting to MongoDB
 var http = require("http");
-var cookieParser = require("cookie-parser")
+var cookieParser = require("cookie-parser");
+var csrf = require("csurf");
 var app = express(); // Web framework to handle routing requests
 var routes = require("./app/routes");
 var config = require("./config/config"); // Application config properties
@@ -51,7 +52,10 @@ MongoClient.connect(config.db, function(err, db) {
         // Mandatory in Express v4
         extended: false
     }));
+    // Prevent CSRF
     app.use(cookieParser())
+    app.use(csrf({ cookie: true }))
+
 
     // Enable session management using express middleware
     app.use(session({
