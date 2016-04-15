@@ -52,10 +52,8 @@ MongoClient.connect(config.db, function(err, db) {
         // Mandatory in Express v4
         extended: false
     }));
-    // Prevent CSRF
+    // For csrf
     app.use(cookieParser())
-    app.use(csrf({ cookie: true }))
-
 
     // Enable session management using express middleware
     app.use(session({
@@ -71,11 +69,10 @@ MongoClient.connect(config.db, function(err, db) {
     app.use(express.static(__dirname + "/app/assets"));
 
     // Application routes
-    routes(app, db);
+    routes(app, db, csrf);
 
     // Template system setup
     swig.setDefaults({
-        // Autoescape disabled
         autoescape: true
     });
 

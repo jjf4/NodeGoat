@@ -8,7 +8,7 @@ var ErrorHandler = require("./error").errorHandler;
 // This page handles ROUTES. It checks whether a user is logged in, whether
 // they're an admin, and sends a user to whichever route they requested.
 
-var exports = function(app, db) {
+var exports = function(app, db, csrf) {
 
     "use strict";
 
@@ -32,11 +32,14 @@ var exports = function(app, db) {
     app.get("/signup", sessionHandler.displaySignupPage);
     app.post("/signup", sessionHandler.handleSignup);
 
+    // Protect against CSRF on the pages below
+    app.use(csrf({ cookie: true }))
+
     // Logout page
     app.get("/logout", sessionHandler.displayLogoutPage);
 
     // The main page of the app
-    // There are two callbacks here. The first checks if the user is logged in 
+    // There are two callbacks here. The first checks if the user is logged in
     // (see session.js 'isLoggedInMiddleware')
     // The req and res is send to this function. If it returns next(),
     // then it sends the req and res to displayWelcomePage.
